@@ -10,6 +10,9 @@ An intelligent skill management platform that uses AI to help users track their 
 - **AI-Powered Gap Analysis**: Let AI analyze your complete profile against target roles
 - **Smart Recommendations**: Get personalized course suggestions based on your background
 - **Self-Assessment Quizzes**: Take AI-generated quizzes to evaluate your skills
+  - View detailed results showing which questions you got wrong
+  - See correct answers for questions you missed
+  - Understand difficulty levels of each question
 - **Study Plans**: Receive customized learning roadmaps
 - **Interactive Dashboard**: Clean Streamlit UI for easy interaction
 
@@ -18,8 +21,7 @@ An intelligent skill management platform that uses AI to help users track their 
 - **Backend**: FastAPI (Python 3.10+)
 - **Database**: SQLite with SQLAlchemy ORM
 - **Frontend**: Streamlit
-- **AI**: Groq SDK (llama-3.3-70b-versatile model)
-- **Testing**: pytest
+- **AI**: Groq SDK ( default llama-3.3-70b-versatile model)
 
 ## 📋 Prerequisites
 
@@ -49,7 +51,7 @@ pip install -r requirements.txt
 cp .env.example .env
 
 # Edit .env and add your Groq API key
-# GROQ_API_KEY=your_groq_api_key_here
+GROQ_API_KEY=your_groq_api_key_here
 ```
 
 ### 3. Initialize Database
@@ -206,17 +208,48 @@ curl -X POST "http://localhost:8000/quiz/python/submit" \
   }'
 ```
 
-## 🧪 Running Tests
+**Response with Detailed Results:**
 
-```bash
-# Run all tests
-pytest -v
-
-# Run specific test file
-pytest tests/test_analysis.py -v
-
-# Run with coverage
-pytest --cov=app tests/
+```json
+{
+  "score": 75,
+  "suggested_level": 4,
+  "ai_used": true,
+  "detailed_results": [
+    {
+      "question_number": 1,
+      "question": "What is a list in Python?",
+      "user_answer": "A data structure",
+      "correct_answer": "A data structure",
+      "is_correct": true,
+      "difficulty": "beginner"
+    },
+    {
+      "question_number": 2,
+      "question": "How do you define a function?",
+      "user_answer": "def",
+      "correct_answer": "def",
+      "is_correct": true,
+      "difficulty": "beginner"
+    },
+    {
+      "question_number": 3,
+      "question": "What is a decorator?",
+      "user_answer": "A class",
+      "correct_answer": "A function wrapper",
+      "is_correct": false,
+      "difficulty": "intermediate"
+    },
+    {
+      "question_number": 4,
+      "question": "What is metaclass?",
+      "user_answer": "A class of a class",
+      "correct_answer": "A class of a class",
+      "is_correct": true,
+      "difficulty": "advanced"
+    }
+  ]
+}
 ```
 
 ## 📁 Project Structure
@@ -263,6 +296,9 @@ The Streamlit interface provides:
 3. **Certifications & Achievements Tab**: Document your professional credentials and accomplishments
 4. **Gap Analysis Tab**: Select any role and get AI-powered comprehensive profile analysis
 5. **Self-Assessment Tab**: Take AI-generated quizzes for any skill
+   - Get detailed feedback on wrong answers
+   - See correct solutions for learning
+   - Track improvement across difficulty levels
 6. **Courses Tab**: Browse available learning resources
 
 ## 🔑 Environment Variables
@@ -271,7 +307,6 @@ The Streamlit interface provides:
 |----------|-------------|----------|
 | DATABASE_URL | SQLite database path | No (default: sqlite:///./dev.db) |
 | GROQ_API_KEY | Groq API key for AI features | Yes (for AI features) |
-| SECRET_KEY | Application secret key | No |
 
 ## 🎯 Default Roles
 
@@ -294,31 +329,10 @@ The system comes pre-configured with:
 
 ## 🤖 AI Features
 
-### How AI Analysis Works
 
-The system now uses a **conversational AI approach** instead of rigid requirements matching:
-
-1. **Comprehensive Profile Analysis**: AI reviews your skills, certifications, and achievements together
-2. **Contextual Understanding**: AI considers how your certifications validate your skills and how achievements demonstrate practical application
-3. **Natural Assessment**: Instead of strict numerical requirements, AI provides nuanced evaluation based on the target role's actual needs
-4. **Personalized Recommendations**: Course suggestions consider your existing knowledge and learning trajectory
-5. **Custom Roles**: You can analyze your fit for any role, not just pre-defined ones
-
-### Without GROQ_API_KEY
-If the API key is not configured, AI endpoints will return:
-```json
-{
-  "error": "GROQ_API_KEY not configured"
-}
-```
-
-### With GROQ_API_KEY
-- Intelligent profile analysis considering all credentials
-- Context-aware gap identification
-- Personalized course recommendations that build on existing knowledge
-- Realistic, phased study plans
-- Dynamic quiz generation
-- Automatic scoring and level suggestions
+1. **Skill Gap Analysis**: Compares the user’s existing skills and certifications with defined role requirements or benchmark proficiencies to identify missing or underdeveloped skills
+2. **CCourse Recommendations**: Suggests targeted learning resources or training programs mapped to identified skill gaps to support focused upskilling.
+3. **Self Evaluation**: Generates self-assessment quizzes that help users evaluate their proficiency levels across 
 
 ## 🔧 Troubleshooting
 

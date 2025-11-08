@@ -88,7 +88,7 @@ Achievements:
 **Available Courses:**
 {course_list}
 
-Based on this information, assess how well this person fits the {target_role} role. Identify what skills are missing, what skills need improvement, and recommend specific courses from the available list that would help bridge the gaps.
+Based on this information, assess how well this person fits the {target_role} role. Identify what skills are missing, what skills need improvement, and recommend specific courses from the available list(do not recommend any if the user doesnt need it) that would help bridge the gaps.
 
 Provide your analysis as a JSON object with this EXACT structure:
 {{
@@ -97,7 +97,7 @@ Provide your analysis as a JSON object with this EXACT structure:
     "underdeveloped": [
       {{"skill": "skillname", "user_level": 2, "required": 4, "severity": 2}}
     ],
-    "fit_score": score out of 100,
+    "fit_score": 65,
     "overall_assessment": "Brief assessment of their readiness"
   }},
   "recommendations": [
@@ -196,16 +196,17 @@ Do not include commentary or explanations. Output valid JSON only."""
         except Exception as e:
             return {"error": f"Quiz generation failed: {str(e)}"}
 
-    def score_quiz(self, answers: List[int], correct_answers: List[int]) -> Dict[str, Any]:
+    def score_quiz(self, answers: List[int], correct_answers: List[int], questions: List[Dict[str, Any]]) -> Dict[str, Any]:
         """
         Score quiz answers and suggest skill level.
         
         Args:
             answers: User's answers
             correct_answers: Correct answers
+            questions: Original questions with options
             
         Returns:
-            Score percentage and suggested skill level
+            Score percentage, suggested skill level, and detailed results
         """
         correct_count = sum(1 for a, c in zip(answers, correct_answers) if a == c)
         total = len(correct_answers)
@@ -223,10 +224,24 @@ Do not include commentary or explanations. Output valid JSON only."""
         else:
             suggested_level = 1
 
+        # Build detailed results
+        detailed_results = []
+        for i, (user_answer, correct_answer, question) in enumerate(zip(answers, correct_answers, questions)):
+            is_correct = user_answer == correct_answer
+            detailed_results.append({
+                "question_number": i + 1,
+                "question": question.get("q", ""),
+                "user_answer": question.get("options", [])[user_answer] if user_answer < len(question.get("options", [])) else "Invalid",
+                "correct_answer": question.get("options", [])[correct_answer] if correct_answer < len(question.get("options", [])) else "Unknown",
+                "is_correct": is_correct,
+                "difficulty": question.get("difficulty", "unknown")
+            })
+
         return {
             "score": score,
             "suggested_level": suggested_level,
-            "ai_used": True
+            "ai_used": True,
+            "detailed_results": detailed_results
         }
 
 

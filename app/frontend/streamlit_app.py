@@ -317,12 +317,14 @@ def main():
                                 st.error(quiz["error"])
                             else:
                                 st.session_state.current_quiz = quiz
+                                st.session_state.quiz_skill = quiz_skill
                                 st.rerun()
                 
                 # Display quiz
                 if "current_quiz" in st.session_state:
                     quiz = st.session_state.current_quiz
                     st.write(f"**Quiz for: {quiz['skill']}**")
+                    st.info("Answer all questions and click Submit to see your results.")
                     
                     answers = []
                     for i, q in enumerate(quiz["questions"]):
@@ -331,7 +333,7 @@ def main():
                         answer = st.radio(
                             "Select answer:",
                             options=range(len(q["options"])),
-                            format_func=lambda x: q["options"][x],
+                            format_func=lambda x, opts=q["options"]: opts[x],
                             key=f"q_{i}"
                         )
                         answers.append(answer)
@@ -339,7 +341,7 @@ def main():
                     if st.button("✅ Submit Quiz"):
                         result = api_call(
                             "POST",
-                            f"/quiz/{quiz_skill}/submit",
+                            f"/quiz/{st.session_state.quiz_skill}/submit",
                             {"answers": answers}
                         )
                         
@@ -347,10 +349,56 @@ def main():
                             if "error" in result:
                                 st.error(result["error"])
                             else:
-                                st.success("Quiz Submitted!")
-                                st.metric("Score", f"{result['score']}%")
-                                st.info(f"Suggested Level: {result['suggested_level']}/5")
+                                # Store results for display
+                                st.session_state.quiz_results = result
                                 del st.session_state.current_quiz
+                                del st.session_state.quiz_skill
+                                st.rerun()
+                
+                # Display quiz results
+                if "quiz_results" in st.session_state:
+                    result = st.session_state.quiz_results
+                    
+                    st.success("✅ Quiz Submitted!")
+                    
+                    # Overall metrics
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.metric("Your Score", f"{result['score']}%")
+                    with col2:
+                        st.metric("Suggested Level", f"{result['suggested_level']}/5")
+                    
+                    st.markdown("---")
+                    
+                    # Detailed results
+                    st.subheader("📊 Detailed Results")
+                    
+                    if result.get("detailed_results"):
+                        for item in result["detailed_results"]:
+                            if item["is_correct"]:
+                                st.success(f"**Question {item['question_number']}** ✓ Correct ({item['difficulty']})")
+                            else:
+                                st.error(f"**Question {item['question_number']}** ✗ Incorrect ({item['difficulty']})")
+                            
+                            st.write(f"**Q:** {item['question']}")
+                            
+                            col_a, col_b = st.columns(2)
+                            with col_a:
+                                if item["is_correct"]:
+                                    st.write(f"✅ **Your answer:** {item['user_answer']}")
+                                else:
+                                    st.write(f"❌ **Your answer:** {item['user_answer']}")
+                            with col_b:
+                                if not item["is_correct"]:
+                                    st.write(f"✓ **Correct answer:** {item['correct_answer']}")
+                            
+                            st.markdown("---")
+                    
+                    # Option to take another quiz
+                    if st.button("🔄 Take Another Quiz"):
+                        del st.session_state.quiz_results
+                        st.rerun()
+                        
             else:
                 st.info("Add some skills first to take quizzes!")
 

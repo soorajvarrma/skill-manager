@@ -165,3 +165,4 @@ class QuizResult(BaseModel):
     score: int
     suggested_level: int
     ai_used: bool
+    detailed_results: Optional[List[Dict[str, Any]]] = None

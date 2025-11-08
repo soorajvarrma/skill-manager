@@ -22,8 +22,11 @@ def generate_quiz(skill: str):
     result = ai_client.generate_quiz(skill)
     
     if "error" not in result:
-        # Store correct answers for later scoring
-        active_quizzes[skill] = [q["correct"] for q in result["questions"]]
+        # Store quiz data for later scoring
+        active_quizzes[skill] = {
+            "correct_answers": [q["correct"] for q in result["questions"]],
+            "questions": result["questions"]
+        }
     
     return result
 
@@ -31,10 +34,10 @@ def generate_quiz(skill: str):
 @router.post("/{skill}/submit")
 def submit_quiz(skill: str, submission: schemas.QuizSubmission):
     """
-    Submit quiz answers and receive score with suggested skill level.
+    Submit quiz answers and receive detailed score with correct answers.
     
-    Compares submitted answers against correct answers and calculates
-    a score percentage and recommended skill level.
+    Shows score percentage, recommended skill level, and breakdown of
+    wrong answers with correct solutions.
     """
     if not ai_client.is_configured():
         return {"error": "GROQ_API_KEY not configured"}
@@ -42,8 +45,11 @@ def submit_quiz(skill: str, submission: schemas.QuizSubmission):
     if skill not in active_quizzes:
         return {"error": "No active quiz found for this skill. Generate a quiz first."}
 
-    correct_answers = active_quizzes[skill]
-    result = ai_client.score_quiz(submission.answers, correct_answers)
+    quiz_data = active_quizzes[skill]
+    correct_answers = quiz_data["correct_answers"]
+    questions = quiz_data["questions"]
+    
+    result = ai_client.score_quiz(submission.answers, correct_answers, questions)
     
     # Clean up
     del active_quizzes[skill]
