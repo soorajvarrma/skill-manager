@@ -15,6 +15,7 @@ class AIClient:
         """Initialize Groq client."""
         self.api_key = os.getenv("GROQ_API_KEY")
         self.client = Groq(api_key=self.api_key) if self.api_key else None
+        self.model = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 
     def is_configured(self) -> bool:
         """Check if API key is configured."""
@@ -110,7 +111,7 @@ Output ONLY the JSON, no other text or explanation."""
 
         try:
             response = self.client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.7,
                 max_tokens=2000
@@ -173,7 +174,7 @@ Do not include commentary or explanations. Output valid JSON only."""
 
         try:
             response = self.client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.8,
                 max_tokens=1500
