@@ -279,9 +279,6 @@ skill-manager/
 │   └── courses.json         # Default courses
 ├── scripts/
 │   └── seed_db.py           # Database seeding script
-├── tests/
-│   ├── test_analysis.py     # Analysis tests
-│   └── test_quiz.py         # Quiz tests
 ├── .env.example             # Environment template
 ├── requirements.txt         # Python dependencies
 └── README.md               # This file
