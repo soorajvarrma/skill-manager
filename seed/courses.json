@@ -1,0 +1,74 @@
+[
+  {
+    "title": "Python for Beginners",
+    "provider": "Coursera",
+    "level": "beginner",
+    "related_skill": "python"
+  },
+  {
+    "title": "Advanced Python Programming",
+    "provider": "Udemy",
+    "level": "advanced",
+    "related_skill": "python"
+  },
+  {
+    "title": "Machine Learning Fundamentals",
+    "provider": "Coursera",
+    "level": "intermediate",
+    "related_skill": "ml"
+  },
+  {
+    "title": "Deep Learning Specialization",
+    "provider": "DeepLearning.AI",
+    "level": "advanced",
+    "related_skill": "ml"
+  },
+  {
+    "title": "Statistics for Data Science",
+    "provider": "Khan Academy",
+    "level": "beginner",
+    "related_skill": "statistics"
+  },
+  {
+    "title": "SQL Bootcamp",
+    "provider": "Udacity",
+    "level": "intermediate",
+    "related_skill": "sql"
+  },
+  {
+    "title": "Database Design and Management",
+    "provider": "Pluralsight",
+    "level": "advanced",
+    "related_skill": "databases"
+  },
+  {
+    "title": "RESTful API Design",
+    "provider": "LinkedIn Learning",
+    "level": "intermediate",
+    "related_skill": "api"
+  },
+  {
+    "title": "JavaScript Essentials",
+    "provider": "freeCodeCamp",
+    "level": "beginner",
+    "related_skill": "javascript"
+  },
+  {
+    "title": "React - The Complete Guide",
+    "provider": "Udemy",
+    "level": "intermediate",
+    "related_skill": "react"
+  },
+  {
+    "title": "Modern CSS with Flexbox and Grid",
+    "provider": "Scrimba",
+    "level": "intermediate",
+    "related_skill": "css"
+  },
+  {
+    "title": "Full Stack Web Development",
+    "provider": "The Odin Project",
+    "level": "advanced",
+    "related_skill": "javascript"
+  }
+]

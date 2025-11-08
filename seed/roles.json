@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Data Scientist",
+    "requirements": {
+      "python": 4,
+      "ml": 4,
+      "statistics": 3,
+      "sql": 3
+    }
+  },
+  {
+    "name": "Backend Engineer",
+    "requirements": {
+      "python": 4,
+      "databases": 4,
+      "api": 3
+    }
+  },
+  {
+    "name": "Frontend Engineer",
+    "requirements": {
+      "javascript": 4,
+      "react": 4,
+      "css": 3
+    }
+  }
+]
